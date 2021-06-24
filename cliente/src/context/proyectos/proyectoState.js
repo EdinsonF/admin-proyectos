@@ -7,7 +7,7 @@ import {type} from '../../types/index';
 
 import { v4 as uuidv4 } from 'uuid';
 
-const {uiShowFormProyecto , eventLoadProyectos, addNewProyect, showProyectSelect} = type;
+const {uiShowFormProyecto , eventLoadProyectos, addNewProyect, showProyectSelect, deleteProyect} = type;
 
 
 const ProyectoState = props => {
@@ -64,6 +64,14 @@ const ProyectoState = props => {
     })
   }
 
+
+  const deleteProyectFn = (id) => {
+    dispatch({
+      type: deleteProyect,
+      payload: id
+    })
+  }
+
  
   return(
     <proyectoContext.Provider
@@ -74,7 +82,8 @@ const ProyectoState = props => {
         mostrarFormularioFn,
         cargarProyectosFn,
         addProyectoFn,
-        showProyectSelectFn
+        showProyectSelectFn,
+        deleteProyectFn
       }}
     >
       {props.children}

@@ -7,27 +7,30 @@ const ListadoProyectos = () => {
 
   const {proyectos, cargarProyectosFn, showProyectSelectFn} = useContext(proyectoContext);
 
-  const { showTaskListFn } = useContext(tareaContext);
+  const { showTaskListFn, handleNameTaksFn,cambiarEditarFn } = useContext(tareaContext);
 
 
   useEffect(() => {
-    if(proyectos.length === 0){
-      cargarProyectosFn();
-    }
-    
-  })
-
+  
+    cargarProyectosFn();
+ 
+  },[])
+  
 
   const selectProyect = (id) => {
     showProyectSelectFn(id);
     showTaskListFn(id);
+    cambiarEditarFn(false);
+    handleNameTaksFn({
+      nombre: ""
+    })
   }
  
   return ( 
       <ul className="listado-proyectos">
           {proyectos.map(proyecto => (
-              <li key={proyecto.id} onClick={() => {selectProyect(proyecto.id)}}>
-                  <button type="button" className="btn btn-blank">
+              <li  key={proyecto.id} onClick={() => {selectProyect(proyecto.id)}}>
+                  <button type="button" className="btn btn-blank resaltarProyect">
                     {proyecto.nombre}
                   </button>
               </li>

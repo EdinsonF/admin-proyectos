@@ -1,4 +1,4 @@
-import React, { useContext, useState} from 'react';
+import React, { useCallback, useContext, useEffect, useState} from 'react';
 
 import proyectoContext from '../../context/proyectos/proyectoContext'
 import tareaContext from '../../context/tareas/tareaContext';
@@ -6,42 +6,76 @@ import tareaContext from '../../context/tareas/tareaContext';
 const FormTarea = () => {
 
   const {proyectSelect} = useContext(proyectoContext);
-  const {addTaskNewFn, showTaskListFn}  = useContext(tareaContext);
 
-  const [task, setTask] = useState({
-    nombre: '',
-  })
+  const {
+          addTaskNewFn, showTaskListFn, mensajeError,showMessageFn,             handleNameTaksFn, nombreTask, formUpdating, updateTaskFn, cambiarEditarFn
+        }  = useContext(tareaContext);
 
-  const {nombre} = task;
+
+  const {id,nombre,estado,id_proyecto} = nombreTask;
+
+  const [infoUpdate, setInfoUpdate] = useState({})
+  
+  const llenarStateEdit = useCallback(() => {
+    if(nombreTask?.id){
+      setInfoUpdate({
+        id:id,
+        estado:estado,
+        id_proyecto:id_proyecto
+      });
+    }
+    
+  },[id,estado,id_proyecto, nombreTask])
+
+  
+  useEffect(() => {
+   
+    if(formUpdating){
+      console.log("entro");
+      llenarStateEdit();
+      }
+
+  }, [formUpdating, llenarStateEdit])
+ 
+  
+
   if(proyectSelect.length === 0) return null;
 
   const [proyecto] = proyectSelect;
 
-  
   const handleInput = (e) => {
-    setTask({
-      ...task,
+    handleNameTaksFn({
       [e.target.name]: e.target.value
-    
     })
   }
 
   const enviarTarea = (e) => {
     e.preventDefault();
-    if(nombre === ""){
-      console.log("Campos vacios");
+    if(nombreTask.nombre === ""){
+      showMessageFn();
       return
     }
 
-    task.id_proyecto= proyecto.id;
-    task.estado=false;
+    if(formUpdating){
+      //editar
+      infoUpdate.nombre = nombre;
+      
+      updateTaskFn(infoUpdate);
+      
+    }else{
+      //registrar
+      nombreTask.id_proyecto= proyecto.id;
+      nombreTask.estado=false;
 
-    addTaskNewFn(task);
+      addTaskNewFn(nombreTask);
+ 
+    }
     showTaskListFn(proyecto.id);
-    
-    setTask({
-      nombre:""
+    cambiarEditarFn(false);
+    handleNameTaksFn({
+      nombre: ""
     })
+   
   }
 
 
@@ -64,11 +98,15 @@ const FormTarea = () => {
             <input 
                 type="submit" 
                 className="btn btn-primario btn-submit btn-block"
-                value="Registrar Tarea"
+                value={ formUpdating ? "Actualizar Tarea" : "Registrar Tarea"}
             />
           </div>
           
         </form>
+        { mensajeError 
+                      &&
+            <p className="mensaje error">El nombre de la tarea es obligatorio</p>
+        }
       </div>
    );
 }

@@ -360,3 +360,7 @@ aside  {
   background-color: rgb(230, 78, 78);
   color: var(--blanco);
 }
+
+.resaltarProyect:hover{
+  background-color: #30506d67;
+}

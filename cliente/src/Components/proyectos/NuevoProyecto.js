@@ -2,27 +2,33 @@ import React, {useContext, useState} from 'react';
 
 import proyectoContext from '../../context/proyectos/proyectoContext';
 
-const NuevoProyecto = () => {
+  const NuevoProyecto = () => {
 
   const {formulario, mostrarFormularioFn, addProyectoFn} = useContext(proyectoContext);
 
 
-const [proyecto, setProyecto] = useState({
-  nombre : ""
-})
-
-const {nombre} = proyecto;
-
-const handleInput = (e) =>{
-  setProyecto({
-    ...proyecto,
-    [e.target.name] : e.target.value 
+  const [proyecto, setProyecto] = useState({
+    nombre : ""
   })
-}
+
+  const [mensaje, setMensaje] = useState(false)
+
+  const {nombre} = proyecto;
+
+  const handleInput = (e) =>{
+    setProyecto({
+      ...proyecto,
+      [e.target.name] : e.target.value 
+    })
+  }
 
   const addProyecto = (e) => {
     e.preventDefault();
     if(nombre === ""){
+      setMensaje(true);
+      setTimeout(() => {
+        setMensaje(false);
+      }, 2000)
       return;
     }
     addProyectoFn(proyecto);
@@ -42,7 +48,7 @@ const handleInput = (e) =>{
             Nuevo Proyecto
           </button>
 
-          { formulario ? (
+          { formulario && (
               <form className="formulario-nuevo-proyecto">
                 <input
                       type="text"
@@ -59,9 +65,12 @@ const handleInput = (e) =>{
                       value="Agregar"
                       onClick={addProyecto}
                 />
+                {mensaje && 
+                    <p className="mensaje error">El nombre es obligatorio</p>
+                }
 
               </form>
-          ) : null
+          ) 
 
           }
 

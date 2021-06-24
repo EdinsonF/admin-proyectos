@@ -1,6 +1,6 @@
 import {type} from '../../types/index';
 
-const {uiShowFormProyecto , eventLoadProyectos, addNewProyect, showProyectSelect} = type;
+const {uiShowFormProyecto , eventLoadProyectos, addNewProyect, showProyectSelect, deleteProyect} = type;
 
 
 const proyectoReducer = (state , action) => {
@@ -19,6 +19,7 @@ const proyectoReducer = (state , action) => {
           proyectos: action.payload
         }
 
+        
       case addNewProyect :
         return {
           ...state,
@@ -31,6 +32,13 @@ const proyectoReducer = (state , action) => {
           return {
             ...state,
             proyectSelect: state.proyectos.filter(proyect => (proyect.id === action.payload))
+          }
+        
+        case deleteProyect:
+          return {
+            ...state,
+            proyectos: state.proyectos.filter(proyect => (proyect.id !== action.payload)),
+            proyectSelect: []
           }
 
 
