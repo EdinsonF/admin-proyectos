@@ -1,4 +1,4 @@
-import React, {useReducer} from 'react';
+import React, {useEffect, useReducer} from 'react';
 
 import proyectoContext from './proyectoContext';
 import proyectoReducer from './proyectoReducer';
@@ -6,17 +6,17 @@ import proyectoReducer from './proyectoReducer';
 import {type} from '../../types/index';
 
 import { v4 as uuidv4 } from 'uuid';
+import { db } from '../../firebase';
 
-const {uiShowFormProyecto , eventLoadProyectos, addNewProyect, showProyectSelect, deleteProyect} = type;
+const {uiShowHideFormProyecto , eventLoadProyectos, showProyectSelect, deleteProyect} = type;
 
 
 const ProyectoState = props => {
+
+  useEffect(() => {
+    cargarProyectosFn();
+  }, [])
   
-  let proyectos = [
-    {id: 1, nombre: "Proyecto 1"},
-    {id: 2,nombre: "Programar"},
-    {id: 3,nombre: "Proyecto 3"}
-  ];
 
   const initialState = {
      proyectos:[],
@@ -30,29 +30,44 @@ const ProyectoState = props => {
   //Serie de funciones ppara el CRUD
   const mostrarFormularioFn = () => {
     dispatch({
-      type: uiShowFormProyecto
+      type: uiShowHideFormProyecto
     })
   }
 
+  const cargarProyectosFn = async () => {
+    /* const result = await db.collection('proyects').get();
+    result.forEach(doc => {
+      proyectos.push(doc.data())
+    })
 
-
- 
-
-  const cargarProyectosFn = () => {
     dispatch({
       type: eventLoadProyectos,
       payload: proyectos
-    })
+    }) */
+
+    db.collection('proyects').onSnapshot((result) => {
+      let proyectos = [];
+      result.forEach(doc => {
+        
+        proyectos.push({...doc.data(), id: doc.id})
+      })
+      console.log(proyectos);
+      dispatch({
+        type: eventLoadProyectos,
+        payload: proyectos
+      })
+    });
+  
   }
 
 
-  const addProyectoFn = (proyecto) => {
-    proyecto.id = uuidv4();
-    
+  const addProyectoFn = async (proyecto) => {
+
     dispatch({
-      type: addNewProyect,
-      payload: proyecto
+      type: uiShowHideFormProyecto
     })
+
+    await db.collection('proyects').doc().set(proyecto);    
 
   }
 

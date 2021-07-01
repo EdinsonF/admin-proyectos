@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState} from 'react';
 
-import proyectoContext from '../../context/proyectos/proyectoContext'
+import proyectoContext from '../../context/proyectos/proyectoContext';
 import tareaContext from '../../context/tareas/tareaContext';
 
 const FormTarea = () => {
@@ -49,7 +49,7 @@ const FormTarea = () => {
     })
   }
 
-  const enviarTarea = (e) => {
+  const enviarTarea = async (e) => {
     e.preventDefault();
     if(nombreTask.nombre === ""){
       showMessageFn();
@@ -67,14 +67,15 @@ const FormTarea = () => {
       nombreTask.id_proyecto= proyecto.id;
       nombreTask.estado=false;
 
-      addTaskNewFn(nombreTask);
- 
+      await addTaskNewFn(nombreTask);
+
     }
     showTaskListFn(proyecto.id);
     cambiarEditarFn(false);
     handleNameTaksFn({
       nombre: ""
     })
+
    
   }
 

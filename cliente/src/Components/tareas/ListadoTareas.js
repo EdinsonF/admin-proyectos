@@ -9,7 +9,6 @@ import tareaContext from '../../context/tareas/tareaContext';
   const [msjDellProyect, setMsjDellProyect] = useState(false);
 
   
-
   const {proyectSelect,deleteProyectFn} = useContext(proyectoContext);
 
   const {

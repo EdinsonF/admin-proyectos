@@ -1,15 +1,16 @@
 import {type} from '../../types/index';
 
-const {uiShowFormProyecto , eventLoadProyectos, addNewProyect, showProyectSelect, deleteProyect} = type;
+const {uiShowHideFormProyecto , eventLoadProyectos, addNewProyect, showProyectSelect, deleteProyect} = type;
 
 
 const proyectoReducer = (state , action) => {
 
   switch (action.type) {
-    case uiShowFormProyecto:
+
+    case uiShowHideFormProyecto:
       return {
         ...state,
-        formulario: true
+        formulario: !state.formulario
       }
       
     
@@ -19,13 +20,6 @@ const proyectoReducer = (state , action) => {
           proyectos: action.payload
         }
 
-        
-      case addNewProyect :
-        return {
-          ...state,
-          proyectos: [...state.proyectos, action.payload],
-          formulario : false
-        }
       
         case showProyectSelect :
         

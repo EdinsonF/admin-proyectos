@@ -1,24 +1,22 @@
 
 import {type} from '../../types/index';
 
-const {showTaskList, addTaskNew, showMessage, eventDeleteTask, eventChangeStatus, eventHandleName, eventChangeUpdating, updateTask, deleteAllTask} = type;
+const {showTaskList, showMessage, eventDeleteTask, eventChangeStatus, eventHandleName, eventChangeUpdating, updateTask, deleteAllTask, eventLoadTask} = type;
 
 const tareaReducer = (state,  action) =>{
 
   switch (action.type) {
     
+    case eventLoadTask :
+      return {
+        ...state,
+        tareas : action.payload
+      }
+
     case showTaskList :
       return{
           ...state,
-          tareasProyecto: state.tareas.filter(task => (task.id_proyecto === action.payload))
-      }
-
-    case addTaskNew :
-      return{
-        ...state,
-        tareas: [...state.tareas, action.payload],
-        mensajeError: false
-        
+          tareasProyecto: state.tareas.filter(task => task.id_proyecto === action.payload)
       }
 
     case eventChangeUpdating: 

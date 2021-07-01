@@ -1,5 +1,5 @@
 export const type = {
-  uiShowFormProyecto : '[UI] Show Form Proyect',
+  uiShowHideFormProyecto : '[UI] Show Form Proyect',
   eventLoadProyectos : '[EVENT] Load Proyectos',
   addNewProyect      : '[ADD] New Proyect',
   showProyectSelect  : '[UI] showProeyctSelect',
@@ -15,6 +15,7 @@ export const type = {
   eventHandleName    : '[EVENT] Handle Name',
   eventChangeUpdating: '[EVENT] Change Updatin',
   updateTask         : '[UPDATE] Task',
-  deleteAllTask      : '[DELETE] All Task Proyect'
+  deleteAllTask      : '[DELETE] All Task Proyect',
+  eventLoadTask      : '[EVENT] Load Taks User '
 
 }

@@ -1,24 +1,24 @@
-import React, { useReducer} from 'react';
+import React, { useReducer, useEffect} from 'react';
 
 import tareaContext from './tareaContext';
 import tareaReducer from './tareaReducer';
 
 import {type} from '../../types/index';
 
-import { v4 as uuidv4 } from 'uuid';
+import { db } from '../../firebase';
 
-const {showTaskList, addTaskNew, showMessage, eventDeleteTask, eventChangeStatus, eventHandleName, eventChangeUpdating, updateTask,deleteAllTask} = type;
+const {showTaskList, addTaskNew, showMessage, eventDeleteTask, eventChangeStatus, eventHandleName, eventChangeUpdating, updateTask,deleteAllTask, eventLoadTask} = type;
 
 
 const TareaState = ({children}) => {
 
 
+  useEffect(() => {
+    loadTaskUser();
+  }, [])
 
   const initialState = {
-    tareas: [{ id: 1, nombre: "Realizar esquema", estado: true, id_proyecto:1},
-    {id: 2,nombre: "Realizar esquema2", estado: false, id_proyecto:1},
-    {id: 3,nombre: "Realizar esquema3", estado: false, id_proyecto:2},
-    {id: 4,nombre: "Realizar esquema4", estado: true, id_proyecto:1}],
+    tareas: [],
     nombreTask: {nombre: ""},
     tareasProyecto:[],
     mensajeError: false,
@@ -30,6 +30,21 @@ const TareaState = ({children}) => {
 
   //funciones - disparadores
 
+  const loadTaskUser = () => {
+    db.collection('tasks').onSnapshot((rs) => {
+      let tasks = [];
+      rs.forEach(doc => {
+        tasks.push({...doc.data(), id: doc.id})
+      })
+
+      dispatch({
+        type : eventLoadTask,
+        payload: tasks
+      })
+    })
+    
+  }
+
   const showTaskListFn = (id_proyect) => {
 
     dispatch({
@@ -38,16 +53,10 @@ const TareaState = ({children}) => {
     })
   }
 
-  const addTaskNewFn = (task) => {
-    task.id = uuidv4();
-
-    dispatch({
-      type : addTaskNew,
-      payload: task
-    })
+  const addTaskNewFn = async (task) => {
+    
+    await db.collection('tasks').doc().set(task);
   }
-
- 
 
   const cambiarEditarFn = (action) => {
     dispatch({
