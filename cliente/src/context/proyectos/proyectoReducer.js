@@ -1,6 +1,6 @@
 import {type} from '../../types/index';
 
-const {uiShowHideFormProyecto , eventLoadProyectos, addNewProyect, showProyectSelect, deleteProyect} = type;
+const {uiShowHideFormProyecto , eventLoadProyectos, showProyectSelect, deleteProyect} = type;
 
 
 const proyectoReducer = (state , action) => {
@@ -31,7 +31,6 @@ const proyectoReducer = (state , action) => {
         case deleteProyect:
           return {
             ...state,
-            proyectos: state.proyectos.filter(proyect => (proyect.id !== action.payload)),
             proyectSelect: []
           }
 

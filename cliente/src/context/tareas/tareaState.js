@@ -7,7 +7,7 @@ import {type} from '../../types/index';
 
 import { db } from '../../firebase';
 
-const {showTaskList, addTaskNew, showMessage, eventDeleteTask, eventChangeStatus, eventHandleName, eventChangeUpdating, updateTask,deleteAllTask, eventLoadTask} = type;
+const {showTaskList, showMessage, eventHandleName, eventChangeUpdating, updateTask,deleteAllTask, eventLoadTask} = type;
 
 
 const TareaState = ({children}) => {
@@ -66,19 +66,17 @@ const TareaState = ({children}) => {
 
   }
 
-  const updateTaskFn = (task) => {
+  const updateTaskFn = async (task) => {
+    await db.collection('tasks').doc(task.id).update(task);
     dispatch({
       type: updateTask,
       payload: task
     })
   }
 
-  const deleteTaskFn = (id) => {
-    dispatch({
-        type: eventDeleteTask,
-        payload: id
-
-    })
+  const deleteTaskFn = async (id) => {
+    await db.collection('tasks').doc(id).delete();
+ 
   }
 
   const handleNameTaksFn = (name) => {
@@ -88,12 +86,8 @@ const TareaState = ({children}) => {
       payload: name
     })
   }
-  const ChangeStatusFn = (task, estadoCambio) => {
-    
-    dispatch({
-      type: eventChangeStatus,
-      payload: {task, estadoCambio}
-    })
+  const ChangeStatusFn = async (task, estadoCambio) => {
+    await db.collection('tasks').doc(task.id).update({estado : estadoCambio}) 
   }
 
   const showMessageFn = () => {
@@ -102,11 +96,13 @@ const TareaState = ({children}) => {
     })
   }
 
-  const deleteAllTaskFn = (id_proyect) => {
-    dispatch({
-      type: deleteAllTask,
-      payload: id_proyect
+  const deleteAllTaskFn = async(tareas) => {
+
+    await tareas.forEach(task => {
+      db.collection('tasks').doc(task.id).delete();
     })
+    //await db.collection('tasks').doc(id_proyect).delete();
+ 
   }
 
 

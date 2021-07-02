@@ -35,13 +35,13 @@ import tareaContext from '../../context/tareas/tareaContext';
       }
       
       if(tareasProyecto.length !== 0){
-        deleteAllTaskFn(proyecto.id);
+        deleteAllTaskFn(tareasProyecto);
       }
         deleteProyectFn(proyecto.id);
     }
 
   
-  const deleteTask = ({estado, id}) => {
+  const deleteTask = async ({estado, id}) => {
 
     if(estado === false){
       setMensajeDellTask(true);
@@ -50,14 +50,14 @@ import tareaContext from '../../context/tareas/tareaContext';
       }, 2000)
       return;
     }
-    deleteTaskFn(id);
+    await deleteTaskFn(id);
     resetForm();
   }
 
 
-  const changeStatus = (tarea) =>{
+  const changeStatus = async (tarea) =>{
 
-    ChangeStatusFn(tarea, !tarea.estado);
+    await ChangeStatusFn(tarea, !tarea.estado);
     showTaskListFn(proyecto.id);
  
   }

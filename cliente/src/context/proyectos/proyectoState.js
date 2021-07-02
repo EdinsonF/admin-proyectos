@@ -5,7 +5,6 @@ import proyectoReducer from './proyectoReducer';
 
 import {type} from '../../types/index';
 
-import { v4 as uuidv4 } from 'uuid';
 import { db } from '../../firebase';
 
 const {uiShowHideFormProyecto , eventLoadProyectos, showProyectSelect, deleteProyect} = type;
@@ -51,7 +50,7 @@ const ProyectoState = props => {
         
         proyectos.push({...doc.data(), id: doc.id})
       })
-      console.log(proyectos);
+      
       dispatch({
         type: eventLoadProyectos,
         payload: proyectos
@@ -80,10 +79,11 @@ const ProyectoState = props => {
   }
 
 
-  const deleteProyectFn = (id) => {
+  const deleteProyectFn = async (id) => {
+
+  await db.collection('proyects').doc(id).delete();    
     dispatch({
-      type: deleteProyect,
-      payload: id
+      type: deleteProyect
     })
   }
 

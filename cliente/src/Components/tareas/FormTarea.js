@@ -60,7 +60,7 @@ const FormTarea = () => {
       //editar
       infoUpdate.nombre = nombre;
       
-      updateTaskFn(infoUpdate);
+      await updateTaskFn(infoUpdate);
       
     }else{
       //registrar
