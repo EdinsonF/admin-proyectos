@@ -2,8 +2,12 @@ import React, { useCallback, useContext, useEffect, useState} from 'react';
 
 import proyectoContext from '../../context/proyectos/proyectoContext';
 import tareaContext from '../../context/tareas/tareaContext';
+import {authContext} from '../auth/authContext/authProvider';
 
 const FormTarea = () => {
+
+  const {userAuth} = useContext(authContext);
+  const uid = userAuth.uid;
 
   const {proyectSelect} = useContext(proyectoContext);
 
@@ -64,6 +68,7 @@ const FormTarea = () => {
       
     }else{
       //registrar
+      nombreTask.userId =  userAuth.uid;
       nombreTask.id_proyecto= proyecto.id;
       nombreTask.estado=false;
 

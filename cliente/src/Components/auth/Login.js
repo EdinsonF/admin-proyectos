@@ -1,13 +1,30 @@
-import {useState, React} from 'react';
-import { Link } from 'react-router-dom'
+import {useState, useContext,useEffect} from 'react';
 
-const Login = () => {
+import { Link} from 'react-router-dom';
+
+import {auth} from '../../firebase';
+
+import {authContext} from './authContext/authProvider';
+
+const Login = ({history}) => {
+
+  const {userAuth} = useContext(authContext);
+
+  useEffect(() => {
+    if(userAuth){
+      console.log("cambio1");
+      history.push("/proyectos");
+    }
+    
+  }, [userAuth, history]);
+
 
   const [user, setUser] = useState({
-    email: "",
-    password: ""
+    email: "edinjson@gmail.com",
+    password: "123456"
   });
 
+  const {email , password} = user;
 
   const onChange = (e) => {
     setUser({
@@ -17,20 +34,28 @@ const Login = () => {
 
   }
 
-  const enviarForm = (e) => {
+  const enviarForm = async (e) => {
     e.preventDefault();
 
-    console.log("enviando");
 
     if(user.email === "" || user.password === ""){
       console.log("campos vacios");
       return;
     }
 
-    console.log("consultando");
+     auth.signInWithEmailAndPassword(email, password)
+      .then((userCredential)  => {
+
+     })
+       .catch((error) => {
+          console.log(error);
+        /* var errorCode = error.code;
+        var errorMessage = error.message; */
+      });
   }
 
-
+ 
+  
   return ( 
     
     <div className="form-usuario">
@@ -45,6 +70,7 @@ const Login = () => {
                     name="email"
                     placeholder="Correo"
                     onChange={onChange}
+                    value={email}
                 />
             </div>
 
@@ -56,6 +82,7 @@ const Login = () => {
                     name="password"
                     placeholder="Contraseña"
                     onChange={onChange}
+                    value={password}
                 />
             </div>
 

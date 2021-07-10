@@ -1,13 +1,27 @@
-import {useState, React} from 'react';
-import { Link } from 'react-router-dom'
+import {useState, React, useContext, useEffect} from 'react';
+import { Link} from 'react-router-dom';
 
-const NuevaCuenta = () => {
+import {authContext} from './authContext/authProvider';
+import {auth} from '../../firebase';
+
+
+const NuevaCuenta = ({history}) => {
+
+  const {userAuth} = useContext(authContext);
+
+  useEffect(() => {
+    if(userAuth){
+      console.log("cambio2");
+      history.push("/proyectos");
+    }
+    
+  }, [userAuth, history]);
 
   const [user, setUser] = useState({
-    nombre: "",
-    email: "",
-    password: "",
-    confirmar: ""
+    nombre: "Edinson Figueroa",
+    email: "edinjson@gmail.com",
+    password: "123456",
+    confirmar: "123456"
   });
 
   const {nombre , email , password , confirmar} = user;
@@ -20,14 +34,11 @@ const NuevaCuenta = () => {
 
   }
 
-  const enviarForm = (e) => {
+  const enviarForm =  (e) => {
     e.preventDefault();
 
-    console.log("enviando");
-
     if(nombre === "" ||email === "" || password === "" || confirmar === ""){
-      console.log("campos vacios");
-      
+      console.log("campos vacios");    
       return;
     }
 
@@ -36,7 +47,18 @@ const NuevaCuenta = () => {
       return;
   }
 
-    console.log("consultando...");
+
+   auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {          
+            //sesion init
+        })
+        .catch((error) => {
+          
+        /* const errorCode = error.code;
+        const errorMessage = error.message; */
+        console.log(error);
+
+      });
   }
 
 
@@ -53,6 +75,7 @@ const NuevaCuenta = () => {
                         id="nombre"
                         name="nombre"
                         placeholder="Nombre"
+                        value={nombre}
                         onChange={onChange}
                     />
                 </div>
@@ -64,6 +87,7 @@ const NuevaCuenta = () => {
                         id="email"
                         name="email"
                         placeholder="Correo"
+                        value={email}
                         onChange={onChange}
                     />
                 </div>
@@ -75,6 +99,7 @@ const NuevaCuenta = () => {
                         id="password"
                         name="password"
                         placeholder="Contraseña"
+                        value={password}
                         onChange={onChange}
                     />
                 </div>
@@ -86,6 +111,7 @@ const NuevaCuenta = () => {
                         id="confirmar"
                         name="confirmar"
                         placeholder="Confirmar Contraseña"
+                        value={confirmar}
                         onChange={onChange}
                     />
                 </div>

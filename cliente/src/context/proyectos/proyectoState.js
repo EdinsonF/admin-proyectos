@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer} from 'react';
+import React, {useEffect, useReducer, useContext} from 'react';
 
 import proyectoContext from './proyectoContext';
 import proyectoReducer from './proyectoReducer';
@@ -6,22 +6,30 @@ import proyectoReducer from './proyectoReducer';
 import {type} from '../../types/index';
 
 import { db } from '../../firebase';
+import {authContext}  from '../../Components/auth/authContext/authProvider';
 
-const {uiShowHideFormProyecto , eventLoadProyectos, showProyectSelect, deleteProyect} = type;
+const {uiShowHideFormProyecto , eventLoadProyectos, showProyectSelect, deleteProyect, restoreState} = type;
 
 
 const ProyectoState = props => {
 
-  useEffect(() => {
-    cargarProyectosFn();
-  }, [])
-  
+  const {userAuth} = useContext(authContext)
+
 
   const initialState = {
      proyectos:[],
     formulario : false,
     proyectSelect:[]
   }
+
+  useEffect(() => {
+
+    if(userAuth){
+      //console.log(state.prueba);
+      cargarProyectosFn(userAuth.uid);
+    }
+    
+  }, [userAuth])
 
   //Dispathpara ejecutar las acciones
   const [state, dispatch] = useReducer(proyectoReducer, initialState)
@@ -33,29 +41,33 @@ const ProyectoState = props => {
     })
   }
 
-  const cargarProyectosFn = async () => {
-    /* const result = await db.collection('proyects').get();
-    result.forEach(doc => {
-      proyectos.push(doc.data())
-    })
-
+  const cargarProyectosFn = async (uid) => {
+    
+    db.collection("proyects").where("userId", "==", uid).onSnapshot((rs) => {
+      let proyectos = [];
+      rs.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        proyectos.push({...doc.data(), id: doc.id})
+    });
     dispatch({
       type: eventLoadProyectos,
       payload: proyectos
-    }) */
-
-    db.collection('proyects').onSnapshot((result) => {
-      let proyectos = [];
-      result.forEach(doc => {
-        
-        proyectos.push({...doc.data(), id: doc.id})
-      })
-      
-      dispatch({
-        type: eventLoadProyectos,
-        payload: proyectos
-      })
-    });
+    })})
+    /* .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            proyectos.push({...doc.data(), id: doc.id})
+        });
+        dispatch({
+          type: eventLoadProyectos,
+          payload: proyectos
+        }) 
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    }); */
+    
   
   }
 
@@ -87,6 +99,12 @@ const ProyectoState = props => {
     })
   }
 
+  const restoreStateFn = () => {
+    dispatch({
+      type: restoreState
+    })
+  }
+
  
   return(
     <proyectoContext.Provider
@@ -98,7 +116,8 @@ const ProyectoState = props => {
         cargarProyectosFn,
         addProyectoFn,
         showProyectSelectFn,
-        deleteProyectFn
+        deleteProyectFn,
+        restoreStateFn
       }}
     >
       {props.children}

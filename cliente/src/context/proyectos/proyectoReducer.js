@@ -1,6 +1,6 @@
 import {type} from '../../types/index';
 
-const {uiShowHideFormProyecto , eventLoadProyectos, showProyectSelect, deleteProyect} = type;
+const {uiShowHideFormProyecto , eventLoadProyectos, showProyectSelect, deleteProyect, restoreState} = type;
 
 
 const proyectoReducer = (state , action) => {
@@ -31,6 +31,13 @@ const proyectoReducer = (state , action) => {
         case deleteProyect:
           return {
             ...state,
+            proyectSelect: []
+          }
+
+          case restoreState:
+          return {
+            ...state,
+            proyectos:[],
             proyectSelect: []
           }
 

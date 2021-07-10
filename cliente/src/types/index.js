@@ -4,6 +4,7 @@ export const type = {
   addNewProyect      : '[ADD] New Proyect',
   showProyectSelect  : '[UI] showProeyctSelect',
   deleteProyect      : '[DELETE] Proyect Select',
+  restoreState       : '[RESTORE] State',
 
   //tareas
 
@@ -16,6 +17,11 @@ export const type = {
   eventChangeUpdating: '[EVENT] Change Updatin',
   updateTask         : '[UPDATE] Task',
   deleteAllTask      : '[DELETE] All Task Proyect',
-  eventLoadTask      : '[EVENT] Load Taks User '
+  eventLoadTask      : '[EVENT] Load Taks User ',
+
+
+
+  //user
+  authSingUpUser      : '[AUTH] SingUp User'
 
 }

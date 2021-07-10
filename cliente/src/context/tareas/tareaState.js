@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect} from 'react';
+import React, { useReducer, useEffect, useContext} from 'react';
 
 import tareaContext from './tareaContext';
 import tareaReducer from './tareaReducer';
@@ -7,15 +7,27 @@ import {type} from '../../types/index';
 
 import { db } from '../../firebase';
 
-const {showTaskList, showMessage, eventHandleName, eventChangeUpdating, updateTask,deleteAllTask, eventLoadTask} = type;
+import {authContext}  from '../../Components/auth/authContext/authProvider';
+
+
+const {showTaskList, showMessage, eventHandleName, eventChangeUpdating, updateTask, eventLoadTask} = type;
+
 
 
 const TareaState = ({children}) => {
 
+  const {userAuth} = useContext(authContext)
+
 
   useEffect(() => {
-    loadTaskUser();
-  }, [])
+    
+    if(userAuth){
+      //console.log(state.prueba);
+      loadTaskUser(userAuth.uid);
+    }
+    
+  }, [userAuth])
+
 
   const initialState = {
     tareas: [],
@@ -30,8 +42,8 @@ const TareaState = ({children}) => {
 
   //funciones - disparadores
 
-  const loadTaskUser = () => {
-    db.collection('tasks').onSnapshot((rs) => {
+  const loadTaskUser = (uid) => {
+    /* db.collection('tasks').onSnapshot((rs) => {
       let tasks = [];
       rs.forEach(doc => {
         tasks.push({...doc.data(), id: doc.id})
@@ -41,8 +53,18 @@ const TareaState = ({children}) => {
         type : eventLoadTask,
         payload: tasks
       })
-    })
+    }) */
     
+    db.collection("tasks").where("userId", "==", uid).onSnapshot((rs) => {
+      let tasks = [];
+      rs.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        tasks.push({...doc.data(), id: doc.id})
+    });
+    dispatch({
+      type : eventLoadTask,
+        payload: tasks
+    })})
   }
 
   const showTaskListFn = (id_proyect) => {
@@ -53,8 +75,7 @@ const TareaState = ({children}) => {
     })
   }
 
-  const addTaskNewFn = async (task) => {
-    
+  const addTaskNewFn = async (task) => {  
     await db.collection('tasks').doc().set(task);
   }
 
@@ -104,9 +125,6 @@ const TareaState = ({children}) => {
     //await db.collection('tasks').doc(id_proyect).delete();
  
   }
-
-
-
 
   return (  
       <tareaContext.Provider 

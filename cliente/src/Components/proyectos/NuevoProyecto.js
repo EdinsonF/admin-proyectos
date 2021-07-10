@@ -1,8 +1,14 @@
 import React, {useContext, useState} from 'react';
 
 import proyectoContext from '../../context/proyectos/proyectoContext';
+import {authContext} from '../auth/authContext/authProvider';
+
 
   const NuevoProyecto = () => {
+
+  const {userAuth} = useContext(authContext);
+  const uid = userAuth.uid;
+
 
   const {formulario, mostrarFormularioFn, addProyectoFn} = useContext(proyectoContext);
 
@@ -31,6 +37,7 @@ import proyectoContext from '../../context/proyectos/proyectoContext';
       }, 2000)
       return;
     }
+    proyecto.userId = uid;
     addProyectoFn(proyecto);
 
     setProyecto({
